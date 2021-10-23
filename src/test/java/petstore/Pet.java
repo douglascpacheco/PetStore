@@ -1,5 +1,6 @@
 package petstore;
 
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,7 +19,7 @@ public class Pet {
         return new String(Files.readAllBytes(Paths.get(caminhoJson)));
 
     }
-@Test
+@Test(priority = 1)
 public void incluirPet() throws IOException {
         String jsonBody = lerJson("db/pet1.json");
 
@@ -34,9 +35,32 @@ public void incluirPet() throws IOException {
                 .statusCode(200)
                 .body("name", is("Cassio"))
                 .body("status", is("available"))
-                .body("category.name", is("dog"))
+                .body("category.name", is("LHPDCP122414"))
                 .body("tags.name", contains("sta"))
         ;
-}
+    }
+    @Test(priority = 2)
+    public void consultarPet() {
+        String petId = "1608202112";
+
+        String token =
+
+        given()
+                .contentType("application/json")
+                .log().all()
+        .when()
+                .get(uri + "/" + petId)
+        .then()
+                .log().all()
+                .statusCode(200)
+                .body("name", is ("Cassio"))
+                .body("category.name", is("LHPDCP122414"))
+                .body("status", is("available"))
+        .extract()
+                .path("category.name")
+
+        ;
+        System.out.println("O Token é "+ token);
+    }
 
 }
